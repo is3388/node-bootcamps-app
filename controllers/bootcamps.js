@@ -12,7 +12,11 @@ exports.getBootcamps = async (req, res, next) =>
     //res.status(400).json({success: false})
     try{
         const bootcamps = await Bootcamp.find({})
-        res.status(200).json({success: true, data: bootcamps})
+        if(!bootcamps)
+        {
+            return res.status(404).json({success: false})
+        }
+        res.status(200).json({success: true, count: bootcamps.length, data: bootcamps})
     }
     catch(err)
     {
@@ -53,7 +57,7 @@ exports.getBootcamp = async (req, res, next) => {
         const bootcamp = await Bootcamp.findById(req.params.id)
         if(!bootcamp)
         {   // prevent error of header already been sent since 2 res.status. add return
-            return res.status(400).json({success: false})
+            return res.status(404).json({success: false})
         }
         res.status(200).json({success: true, data: bootcamp })
    }
@@ -66,25 +70,51 @@ exports.getBootcamp = async (req, res, next) => {
 // @desc Update specific bootcamp
 // @route PUT or PATCH /api/v1/bootcamps/:id
 // @access Private must be publisher or Admin
-exports.updateBootcamp = (req, res, next) => {
+exports.updateBootcamp = async (req, res, next) => {
     //res.send('<h1>Hello from Express</h1>') // go to Postman Preview not raw to see
     //res.send({name: 'Alex'}) // using res.send to send json object
     //res.json({name:'Alex'})
     //res.sendStatus(400)
-   //res.status(400).json({success: false})
-   res.status(200).json({success: true, msg:`Update a bootcamp for ${req.params.id}`})
+   //res.status(400).json({success: false}) 
+   try
+   {
+       const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, 
+        { new: true, runValidators: true })
+        if(!bootcamp)
+        {
+            return res.status(404).json({success: false})
+        }
+        res.status(200).json({success: true, data: bootcamp})
+    }
+    catch(err)
+    {
+        res.status(400).json({success: false})
+    }
 }
 
 // @desc Delete specific bootcamp
 // @route DELETE /api/v1/bootcamps/:id
 // @access Private must be publisher or Admin
-exports.deleteBootcamp = (req, res, next) => {
+exports.deleteBootcamp = async (req, res, next) => {
     //res.send('<h1>Hello from Express</h1>') // go to Postman Preview not raw to see
     //res.send({name: 'Alex'}) // using res.send to send json object
     //res.json({name:'Alex'})
     //res.sendStatus(400)
    //res.status(400).json({success: false})
-   res.status(200).json({success: true, msg:`Delete a bootcamp for ${req.params.id}`})
+   //await Bootcamp.findByIdAndDelete(req.params.id)
+   try {
+    const bootcamp = await Bootcamp.findById(req.params.id)
+    if(!bootcamp)
+    {
+        return res.status(400).json({success: false})
+    }
+    bootcamp.remove()
+    res.status(200).json({success: true, data: {}})
+   }
+   catch(err)
+   {
+       res.status(400).json({success:false})
+   }
 }
 
 
