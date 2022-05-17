@@ -29,11 +29,6 @@ exports.getBootcamps = async (req, res, next) =>
 // @access Private must be publisher or Admin
 exports.createBootcamp = async (req, res, next) =>
 {
-    //res.send('<h1>Hello from Express</h1>') // go to Postman Preview not raw 
-    //res.send({name: 'Alex'}) // using res.send or res.json to send json object 
-    //res.json({name:'Alex'})
-    //res.sendStatus(400)
-    //res.status(400).json({success: false})
     try{
     const bootcamp = await Bootcamp.create(req.body)
     res.status(201).json({success: true, data: bootcamp})
@@ -48,11 +43,6 @@ exports.createBootcamp = async (req, res, next) =>
 // @route GET /api/v1/bootcamps/:id
 // @access Public
 exports.getBootcamp = async (req, res, next) => {
-    //res.send('<h1>Hello from Express</h1>') // go to Postman Preview not raw to see
-    //res.send({name: 'Alex'}) // using res.send to send json object
-    //res.json({name:'Alex'})
-    //res.sendStatus(400)
-   //res.status(400).json({success: false})
    try {
         const bootcamp = await Bootcamp.findById(req.params.id)
         if(!bootcamp)
@@ -63,7 +53,8 @@ exports.getBootcamp = async (req, res, next) => {
    }
    catch (err)
    {
-       res.status(400).json({success: false})
+        //res.status(400).json({success: false})
+        next(err)
    }
 }
 
@@ -71,11 +62,6 @@ exports.getBootcamp = async (req, res, next) => {
 // @route PUT or PATCH /api/v1/bootcamps/:id
 // @access Private must be publisher or Admin
 exports.updateBootcamp = async (req, res, next) => {
-    //res.send('<h1>Hello from Express</h1>') // go to Postman Preview not raw to see
-    //res.send({name: 'Alex'}) // using res.send to send json object
-    //res.json({name:'Alex'})
-    //res.sendStatus(400)
-   //res.status(400).json({success: false}) 
    try
    {
        const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, 
@@ -96,11 +82,6 @@ exports.updateBootcamp = async (req, res, next) => {
 // @route DELETE /api/v1/bootcamps/:id
 // @access Private must be publisher or Admin
 exports.deleteBootcamp = async (req, res, next) => {
-    //res.send('<h1>Hello from Express</h1>') // go to Postman Preview not raw to see
-    //res.send({name: 'Alex'}) // using res.send to send json object
-    //res.json({name:'Alex'})
-    //res.sendStatus(400)
-   //res.status(400).json({success: false})
    //await Bootcamp.findByIdAndDelete(req.params.id)
    try {
     const bootcamp = await Bootcamp.findById(req.params.id)

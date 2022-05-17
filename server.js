@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 const connectDB = require('./config/db')
 const bootcamps = require('./routes/bootcamps')
 //const logger = require('./middleware/logger')
+const errorHandler = require('./middleware/error')
 const morgan = require('morgan')
 const colors = require('colors')
 
@@ -26,6 +27,9 @@ if(process.env.NODE_ENV === 'development')
 // mount routers
 app.use('/api/v1/bootcamps', bootcamps)
 // mount logger
+
+// mount express custom handlers
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
 
