@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-//const slugify = require('slugify');
+const slugify = require('slugify');
 //const geocoder = require('../utils/geocoder');
 
 const BootcampSchema = new mongoose.Schema(
@@ -99,6 +99,15 @@ const BootcampSchema = new mongoose.Schema(
       type: Date,
       default: Date.now
     }
+})
+
+// create bootcamp slug from the name before saving the document
+// must pass in next and call next to move to the next middleware
+BootcampSchema.pre('save', function (next)
+{
+  //console.log('slugify ran', this.name)
+  this.slug = slugify(this.name, {lower:true})
+  next()
 })
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema)
