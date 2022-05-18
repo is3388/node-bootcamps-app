@@ -6,9 +6,11 @@ const errorHandler = (err, req, res, next) =>
 {
     // log to console for developer
     //console.log(err.stack.red)
-    console.log(err)
     let error = {...err}
-    // Mongoose bad ObjectID
+    error.message = err.message
+    console.log(err)
+
+    // Mongoose bad ObjectID with invalid format
     if(err.name === 'CastError')
     {
         const message = `Resource not found with id of ${err.value}`
