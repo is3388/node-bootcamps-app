@@ -1,7 +1,7 @@
 const express = require('express')
 const dotenv = require('dotenv')
 const connectDB = require('./config/db')
-const bootcamps = require('./routes/bootcamps')
+
 //const logger = require('./middleware/logger')
 const errorHandler = require('./middleware/error')
 const morgan = require('morgan')
@@ -12,6 +12,9 @@ dotenv.config({path: './config/config.env'})
 
 // connect to DB
 connectDB()
+
+// load route files
+const bootcamps = require('./routes/bootcamps')
 
 const app = express()
 
@@ -24,6 +27,7 @@ if(process.env.NODE_ENV === 'development')
 }
 // mount logger must write first before any route
 //app.use(logger)
+
 // mount routers
 app.use('/api/v1/bootcamps', bootcamps)
 // mount logger
