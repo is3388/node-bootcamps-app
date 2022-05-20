@@ -99,6 +99,9 @@ const BootcampSchema = new mongoose.Schema(
       type: Date,
       default: Date.now
     }
+}, { 
+    toJSON: { virtuals: true }, // for set up virtual field 
+    toObject: { virtuals: true }
 })
 
 // create bootcamp slug from the name before saving the document
@@ -127,6 +130,22 @@ BootcampSchema.pre('save', async function(next){
   // do not save address in database
   this.address = undefined
   next()
+}) 
+
+// cascade delete all course related to a bootcamp is deleted. It must be pre middleware for remove
+BootcampSchema.pre('remove', async function (next)
+{// this.model can bring in other model to delete with specified field in Course model
+  console.log(`Courses being deleted from bootcamp with id ${this._id}`)
+  await this.model('Course').deleteMany({bootcamp: this._id})
+  next()
+})
+
+// reverse populate with virtuals -courses is the name of virtual object with field of _id  that reference Course model
+//bootcamp is like foreign key 
+BootcampSchema.virtual('courses', {
+  ref: 'Course', localField: '_id',
+  foreignField: 'bootcamp',
+  justOne: false
 })
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema)

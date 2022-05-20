@@ -33,8 +33,10 @@ exports.getBootcamps = asyncHandler(async (req, res, next) =>
     //console.log(queryString)
 
     // find resources
-    query = Bootcamp.find(JSON.parse(queryString)) // find({}) is an object
-    
+    //query = Bootcamp.find(JSON.parse(queryString)) // find({}) is an object
+    // reverse populate with virtual object to get an array of all courses
+    // limit certain fields to show, passing object with path and select to populate
+    query = Bootcamp.find(JSON.parse(queryString)).populate('courses')
     // select fields req.query.select to check if the word select is there in query string
     // in Postman {{URL}}/api/v1/bootcamps/?select=name,description
     // but Mongoose query syntax is query.select('name description) no comma between fields
@@ -48,7 +50,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) =>
     // sort by fields
     if(req.query.sort)
     {
-        const sortBy = req.query.sort.replace(',', '')
+        const sortBy = req.query.sort.replace(',', ' ')
         query = query.sort(sortBy)
     }
     else
@@ -131,7 +133,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 // @route DELETE /api/v1/bootcamps/:id
 // @access Private must be publisher or Admin
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
-   //await Bootcamp.findByIdAndDelete(req.params.id)
+   //await Bootcamp.findByIdAndDelete(req.params.id) won't trigger pre middleware
     const bootcamp = await Bootcamp.findById(req.params.id)
     if(!bootcamp)
     {
