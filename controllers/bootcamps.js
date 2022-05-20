@@ -64,7 +64,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) =>
     const limit = parseInt(req.query.limit, 10) || 10 // page size which is number of items on a page
     const startIndex = (page - 1) * limit 
     const endIndex = page * limit
-    const total = await query.countDocuments()
+    const total = Bootcamp.find(JSON.parse(queryString)).countDocuments()
 
     query = query.skip(startIndex).limit(limit)
         
