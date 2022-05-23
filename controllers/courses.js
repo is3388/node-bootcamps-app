@@ -9,22 +9,24 @@ const asyncHandler = require('../middleware/async')
 // @access Public
 exports.getCourses = asyncHandler(async (req, res, next) =>
 {
-    let query
-    if(req.params.bootcampId)
+    //let query
+    if(req.params.bootcampId) // get courses of a specific bootcamp
     {
-        query = Course.find({ bootcamp: req.params.bootcampId})
+        //query = Course.find({ bootcamp: req.params.bootcampId})
+        const courses = await Course.find({ bootcamp: req.params.bootcampId})
+        res.status(200).json({success: true, count: courses.length, data: courses})
     }
     else
     { // to include info of associated bootcamp not only bootcamp id but all
       //  query = Course.find({}).populate('bootcamp')
       // to include info of associated bootcamp not only bootcamp id but some fields
-        query = Course.find({}).populate({
+        /*query = Course.find({}).populate({
             path: 'bootcamp',
-            select: 'name description'
-        })
+            select: 'name description',
+        })*/ // find all courses associated with all bootcamps
+        res.status(200).json(res.advancedResults) // get all courses and can be used with pagination etc
     }
-    const courses = await query
-    res.status(200).json({ success: true, count: courses.length, data: courses })
+    
 })
 
 // @desc Get specific course

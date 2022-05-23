@@ -101,7 +101,8 @@ const BootcampSchema = new mongoose.Schema(
     }
 }, { 
     toJSON: { virtuals: true }, // for set up virtual field 
-    toObject: { virtuals: true }
+    toObject: { virtuals: true },
+    id: false // prevent this id from showing. it doesn't exist in db
 })
 
 // create bootcamp slug from the name before saving the document

@@ -4,12 +4,12 @@ const asyncHandler = require('../middleware/async')
 const geocoder = require('../utils/geocoder')
 const path = require('path')
 
-// @desc Get all bootcamps
+// @desc Get all bootcamps with associated courses
 // @route GET /api/v1/bootcamps
 // @access Public
 exports.getBootcamps = asyncHandler(async (req, res, next) =>
 {
-    //res.send('<h1>Hello from Express</h1>') // go to Postman Preview not raw to see
+    /*the code moves to custom middleware called advancedResults//res.send('<h1>Hello from Express</h1>') // go to Postman Preview not raw to see
     //res.send({name: 'Alex'}) // using res.send to send json object
     //res.json({name:'Alex'})
     //res.sendStatus(400)
@@ -86,9 +86,9 @@ exports.getBootcamps = asyncHandler(async (req, res, next) =>
         pagination.prev = { page: page - 1,
                             limit 
                         }
-    }
+    }*/
 
-        res.status(200).json({success: true, count: bootcamps.length, pagination: pagination, data: bootcamps})
+        res.status(200).json(res.advancedResults)
    
 })
 
@@ -170,8 +170,7 @@ exports.getBootcampsInRadius = asyncHandler(async (req, res, next) =>
 // @route PUT /api/v1/bootcamps/:id/photo
 // @access Private must be publisher or Admin
 exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
-    //await Bootcamp.findByIdAndDelete(req.params.id) won't trigger pre middleware
-     const bootcamp = await Bootcamp.findById(req.params.id)
+    const bootcamp = await Bootcamp.findById(req.params.id)
      if(!bootcamp)
      {
         return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404))
