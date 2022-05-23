@@ -42,7 +42,7 @@ const CourseSchema = new mongoose.Schema({
 // create a static method to get avg of course tuition of a specific bootcamp, store into db
 CourseSchema.statics.getAverageCost = async function(bootcampId) 
 {
-    console.log('Calculating the average cost ...')
+    //console.log('Calculating the average cost ...')
     //obj is an aggregated object and steps are inside the [] pipeline and this refers to current model
     const obj = await this.aggregate([
         {
@@ -54,7 +54,7 @@ CourseSchema.statics.getAverageCost = async function(bootcampId)
                     }
         }
      ])
-    console.log(obj) // obj is an object in an array with id and averageCost
+    //console.log(obj) // obj is an object in an array with id and averageCost
     try
     { // this.model(modelname) is to reference another model from this current model and update the avg cost for that bootcamp
         await this.model('Bootcamp').findByIdAndUpdate(bootcampId, 
