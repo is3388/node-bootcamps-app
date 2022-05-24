@@ -8,6 +8,7 @@ const errorHandler = require('./middleware/error')
 const morgan = require('morgan')
 const colors = require('colors')
 const fileUpload = require('express-fileupload')
+const cookieParser = require('cookie-parser')
 
 // since this config file is not .env on the root, needs to specify path
 dotenv.config({path: './config/config.env'})
@@ -24,6 +25,7 @@ const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+app.use(cookieParser())
 
 if(process.env.NODE_ENV === 'development')
 {
