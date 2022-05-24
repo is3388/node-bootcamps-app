@@ -7,5 +7,14 @@ const User = require('../models/User')
 // @access Public
 exports.signup = asyncHandler(async (req, res, next) =>
  {
-    res.status(200).json({ success: true })
+    const {name, email, password, role} = req.body
+    // create user
+    const user = await User.create({
+        name,
+        email,
+        password,
+        role
+    })
+ const token = user.getSignedJwtToken()
+ res.status(200).json({ success: true, token })
  })

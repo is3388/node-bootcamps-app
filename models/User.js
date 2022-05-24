@@ -1,17 +1,19 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const UserSchema = new mongoose.Schema({
     name: { 
             type: String,
-            required: [true, 'Please enter a name']
+            required: [true, 'Please add a name']
           },
     email: {
             type: String,
-            required: [true, 'Please enter an email'],
+            required: [true, 'Please add an email'],
             unique: true,
             match:  [
                 /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                'Please enter a valid email'
+                'Please add a valid email'
               ]
             }, 
     role: {
@@ -21,7 +23,7 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
                 type: String,
-                required: [true, 'Please enter a password'],
+                required: [true, 'Please add a password'],
                 minlength: 8,
                 select: false
                },
@@ -32,5 +34,27 @@ const UserSchema = new mongoose.Schema({
                 default: Date.now
                 }
 })
+
+// encrypt password using bcryptjs
+UserSchema.pre('save', async function(next)
+{
+    // generate salt
+    const salt = await bcrypt.genSalt(10)
+    // turn plain password into hash password
+    this.password = await bcrypt.hash(this.password, salt)
+    //const user = this
+    // user.password = awiat bcrypt.hash(user.password, salt)
+    next()
+})
+
+// sign JWT token and return it
+UserSchema.methods.getSignedJwtToken = function()
+{
+    return jwt.sign({id: this._id}, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRE
+    })
+}
+
+
 
 module.exports = mongoose.model('User', UserSchema)
