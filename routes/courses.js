@@ -2,7 +2,7 @@ const express = require('express')
 const { getCourses, getCourse, addCourse, updateCourse, deleteCourse } = require('../controllers/courses')
 const Course = require('../models/Course')
 const advancedResults = require('../middleware/advancedResults')
-const { protect } = require('../middleware/auth')
+const { protect, authorize } = require('../middleware/auth')
 
 // in order to merge the URL param from other routes, add mergeParams to true
 // so that merge '/:bootcampId/courses' with '/'
@@ -13,7 +13,7 @@ router.route('/').get(advancedResults(Course, {
     path: 'bootcamp',
     select: 'name description'
 }), getCourses)
-.post(protect, addCourse)
-router.route('/:id').get(getCourse).put(protect, updateCourse).delete(protect, deleteCourse)
+.post(protect, authorize('publisher', 'admin'), addCourse)
+router.route('/:id').get(getCourse).put(protect, authorize('publisher', 'admin'), updateCourse).delete(protect, authorize('publisher', 'admin'), deleteCourse)
 
 module.exports = router

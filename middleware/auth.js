@@ -3,7 +3,7 @@ const ErrorResponse = require('../utils/errorResponse')
 const asyncHandler = require('./async') 
 const User = require('../models/User')
 
-// to verify token in order to protect routes from being access by user. It must be publisher role or admin role
+// to verify token to extract id inside the token and see if there is a match user id in database in order to protect routes from being access by user. 
 exports.protect = asyncHandler( async( req, res, next ) =>
 {
     let token
@@ -32,6 +32,18 @@ exports.protect = asyncHandler( async( req, res, next ) =>
         return next( new ErrorResponse('Not authorize to access this route'), 401)
     }
 })
+
+// to grant access to specific role. Pass in with comma separated value of roles such as publisher,user
+exports.authorize = ( ... roles ) => {
+    return (req, res, next) => {
+        if(!roles.includes(req.user.role))
+        {
+            return next ( new ErrorResponse(`User role ${req.user.role} is not authorized to access this route`), 403)
+        }
+        next()
+    }
+}
+
 
 
 
