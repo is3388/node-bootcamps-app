@@ -95,8 +95,18 @@ exports.getBootcamps = asyncHandler(async (req, res, next) =>
 // @desc Create a new bootcamp
 // @route POST /api/v1/bootcamps
 // @access Private must be publisher or Admin
+// Publisher can publish only one bootcamp but Admin can publish multiple
 exports.createBootcamp = asyncHandler(async (req, res, next) =>
 {
+    // add login user to req.body
+    req.body.user = req.user.id
+    // check if the user is publisher. If yes, he can only have one bootcamp associated with
+    const publishedBootcamp = await Bootcamp.findOne({user: req.user.id}) 
+
+    if (publishedBootcamp && req.user.role !== 'admin')
+    {
+        return next(new ErrorResponse(`The user with ID ${req.user.id} has already published a bootcamp`, 400))
+    }
     const bootcamp = await Bootcamp.create(req.body)
     res.status(201).json({success: true, data: bootcamp})
     
