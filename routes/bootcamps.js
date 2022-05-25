@@ -2,7 +2,8 @@ const express = require('express')
 const Bootcamp = require('../models/Bootcamp')
 const advancedResults = require('../middleware/advancedResults')
 const { getBootcamps, createBootcamp, getBootcamp, updateBootcamp, deleteBootcamp, getBootcampsInRadius, bootcampPhotoUpload } = require('../controllers/bootcamps')
- 
+const { protect } = require('../middleware/auth')
+
 // include other resource routers like course
 const courseRouter = require('./courses')
 
@@ -13,7 +14,7 @@ const router = express.Router()
 router.use('/:bootcampId/courses', courseRouter)
 
 router.route('/radius/:zipcode/:distance').get(getBootcampsInRadius)
-router.route('/').get(advancedResults(Bootcamp, 'courses'), getBootcamps).post(createBootcamp) //courses is the virtual field (an array of courses) in Bootcamp model
-router.route('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp) 
-router.route('/:id/photo').put(bootcampPhotoUpload)
+router.route('/').get(advancedResults(Bootcamp, 'courses'), getBootcamps).post(protect, createBootcamp) //courses is the virtual field (an array of courses) in Bootcamp model
+router.route('/:id').get(getBootcamp).put(protect, updateBootcamp).delete(protect, deleteBootcamp) 
+router.route('/:id/photo').put(protect, bootcampPhotoUpload)
 module.exports = router
