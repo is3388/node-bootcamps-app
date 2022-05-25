@@ -58,6 +58,25 @@ exports.getProfile = asyncHandler(async (req, res, next) =>
 
 })
 
+// @desc Forgot password
+// @route POST /api/v1/auth/forgotpassword
+// @access Public
+exports.forgotPassword = asyncHandler(async (req, res, next) =>
+{
+    const user = await User.findOne({email: req.body.email})
+    if (!user) 
+    {
+        return next(new ErrorResponse(`There is no email with ${req.body.email}`, 404))
+    }
+    //get reset token
+    const resetToken = user.getResetPasswordToken()
+    // save the hash password token to database
+    await user.save({validateBeforeSave: false})
+
+    res.status(200).json({ success: true, data: user })
+
+})
+
 // custom function to get token from user,model and create a cookie 
 // with token on it and send response
 const sendTokenResponse = (user, statusCode, res) =>{
