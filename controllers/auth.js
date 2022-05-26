@@ -2,6 +2,7 @@ const ErrorResponse = require('../utils/errorResponse')
 const asyncHandler = require('../middleware/async')
 const User = require('../models/User')
 const resetPasswordEmail = require('../utils/sendEmail')
+const crypto = require('crypto')
 
 // @desc Register user
 // @route POST /api/v1/auth/register
@@ -95,6 +96,30 @@ exports.forgotPassword = asyncHandler(async (req, res, next) =>
 
     return next(new ErrorResponse('Email could not be sent', 500));
   }
+})
+
+// @desc Reset password
+// @route PUT /api/v1/auth/resetpassword/:resettoken
+// @access Public // since the token from the email has expiration
+exports.resetPassword = asyncHandler(async (req, res, next) =>
+{   // get the token from req.params.resettoken and hash it to see if it matches with the database
+    const resetPasswordToken = crypto.createHash('sha256').update(req.params.resettoken).digest('hex')
+    // get the user from the database
+    const user = await User.findOne({
+        resetPasswordToken, 
+        resetPasswordExpire: { $gt: Date.now()}
+    })
+    if (!user)
+    {
+        return next(new ErrorResponse('Invalid token', 400))
+    }
+    // set new password
+    user.password = req.body.password
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpire = undefined
+    await user.save()
+
+    sendTokenResponse(user, 200, res)
 })
 
 // custom function to get token from user,model and create a cookie 
