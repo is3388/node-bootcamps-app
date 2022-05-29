@@ -6,12 +6,14 @@ const { protect, authorize } = require('../middleware/auth')
 
 // include other resource routers like course
 const courseRouter = require('./courses')
+const reviewRouter = require('./reviews')
 
 const router = express.Router()
 
 // re-route into other resource routers
 // if that route get hit, pass onto that router
 router.use('/:bootcampId/courses', courseRouter)
+router.use('/:bootcampId/reviews', reviewRouter)
 
 router.route('/radius/:zipcode/:distance').get(getBootcampsInRadius)
 router.route('/').get(advancedResults(Bootcamp, 'courses'), getBootcamps).post(protect, authorize('publisher', 'admin'), createBootcamp) //courses is the virtual field (an array of courses) in Bootcamp model
