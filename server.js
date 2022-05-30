@@ -12,6 +12,9 @@ const cookieParser = require('cookie-parser')
 const mongoSanitize = require('express-mongo-sanitize')
 const helmet = require('helmet')
 const xss = require('xss-clean')
+const rateLimit = require('express-rate-limit')
+const hpp = require('hpp')
+const cors = require('cors')
 
 // since this config file is not .env on the root, needs to specify path
 dotenv.config({path: './config/config.env'})
@@ -51,6 +54,18 @@ app.use(helmet())
 
 // prevent cross site scripting XSS attack
 app.use(xss())
+
+// rate limiting each IP to make certain request in certain period of time
+const limiter = rateLimit({ windowMs: 10 * 60 * 1000, // 10 mins
+                            max: 100 // 100 requests per 10 mins for each IP address
+                        })
+app.use(limiter)
+
+// prevent http param pollution
+app.use(hpp())
+
+// enable CORS cross origin resource to let other domain such as frontend domain can connect to our public API
+app.use(cors())
 
 // set up serve up static folder is public directory
 app.use(express.static(path.join(__dirname, 'public')))
