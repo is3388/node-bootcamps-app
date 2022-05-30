@@ -10,6 +10,8 @@ const colors = require('colors')
 const fileUpload = require('express-fileupload')
 const cookieParser = require('cookie-parser')
 const mongoSanitize = require('express-mongo-sanitize')
+const helmet = require('helmet')
+const xss = require('xss-clean')
 
 // since this config file is not .env on the root, needs to specify path
 dotenv.config({path: './config/config.env'})
@@ -43,6 +45,12 @@ app.use(fileUpload())
 // mount express mongo santize to sanitize data input such as email, password
 // {"email": {"$gt":""},"password": "123456"} in Postman, you will get 404
 app.use(mongoSanitize())
+
+// set security headers
+app.use(helmet())
+
+// prevent cross site scripting XSS attack
+app.use(xss())
 
 // set up serve up static folder is public directory
 app.use(express.static(path.join(__dirname, 'public')))
