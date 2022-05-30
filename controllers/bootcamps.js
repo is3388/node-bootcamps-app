@@ -143,6 +143,8 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
         }
         bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, 
             { new: true, runValidators: true })
+        
+        //bootcamp.save()
 
         res.status(200).json({success: true, data: bootcamp})
 })

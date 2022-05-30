@@ -74,6 +74,7 @@ exports.updateDetails = asyncHandler(async (req, res, next) =>
             new: true,
             runValidators: true
         })
+    //user.save()
     // no need to write if (!user) as middleware protect run before this function
     res.status(200).json({ success: true, data: user })
 

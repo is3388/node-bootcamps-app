@@ -66,7 +66,7 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse(`No review found with id of ${req.params.id}`, 404))
     }
 
-    // check if user is bootcamp owner or admin
+    // check if user is review belongs to the user or admin
     if(review.user.toString() !== req.user.id && req.user.role !== 'admin')
     {
         return next(new ErrorResponse(`User ${req.user.id} is not authorized to update this review`, 401))
@@ -92,7 +92,7 @@ exports.deleteReview = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse(`No review found with id of ${req.params.id}`, 404))
     }
 
-    // check if user is bootcamp owner or admin
+    // check if user is the review belongs to the user or admin
     if(review.user.toString() !== req.user.id && req.user.role !== 'admin')
     {
         return next(new ErrorResponse(`User ${req.user.id} is not authorized to delete this review`, 401))
