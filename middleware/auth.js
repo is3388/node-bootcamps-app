@@ -9,12 +9,12 @@ exports.protect = asyncHandler( async( req, res, next ) =>
     let token
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer'))
     {
-        token = req.headers.authorization.split(' ')[1] // Bearer tokenValue
+        token = req.headers.authorization.split(' ')[1] // set Bearer tokenValue in header authorization not use cookie to store token
     }
-    //else if (req.cookies.token)
-    //{
-        //token = req.cookies.token
-    //}
+    /*else if (req.cookies.token) // set token in cookies instead of header authorization. but if use cookies, needs to clear token when log out
+    {
+        token = req.cookies.token
+    }*/
     // make sure token exists
     if(!token)
     {
